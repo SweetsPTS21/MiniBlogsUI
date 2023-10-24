@@ -127,7 +127,7 @@ const BlogDetails = () => {
                                 xs={12}
                                 className={classes.details__body}
                             >
-                                {blog.content.map((item, index) => (
+                                {blog.content && blog.content.map((item, index) => (
                                     <>
                                         <Grid
                                             item

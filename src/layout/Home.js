@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { lazy, useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
@@ -89,43 +89,41 @@ const userStyle = makeStyles((theme) => ({
     },
 }));
 
-function PaginatedItems({ items, itemsPerPage }) {
+const PaginatedItems = () => {
     const classes = userStyle();
-    const [itemOffset, setItemOffset] = useState(0);
+    const dispatch = useDispatch();
+    const blogs = useSelector((state) => state.blogs.blogs);
+    const [limit, setLimit] = useState(5);
+    const [offset, setOffset] = useState(0);
 
-    const endOffset = itemOffset + itemsPerPage;
-    const currentItems = items.slice(itemOffset, endOffset);
-    // const pageCount = Math.ceil(items.length / itemsPerPage);
+    useEffect(() => {
+        dispatch(blogActions.getBlogs(limit, offset));
+    }, [offset]);
 
-    // // Invoke when user click to request another page.
-    // const handlePageClick = (event) => {
-    //     const newOffset = (event.selected * itemsPerPage) % items.length;
-    //     setItemOffset(newOffset);
-    // };
     return (
         <>
-            <Blogs blogs={currentItems} />
+            <Blogs blogs={blogs} />
 
-            {itemOffset + itemsPerPage < items.length && (
+            {offset + limit <= blogs.length && (
                 <Grid item xs={12} className={classes.loadmore}>
                     <Button
                         variant="contained"
                         color="primary"
                         className={classes.button}
-                        onClick={() => setItemOffset(itemOffset + itemsPerPage)}
+                        onClick={() => setOffset(offset + limit)}
                     >
                         More posts
                         <ArrowForwardRoundedIcon />
                     </Button>
                 </Grid>
             )}
-            {itemOffset > 0 && (
+            {offset > 0 && (
                 <Grid item xs={12} className={classes.loadmore}>
                     <Button
                         variant="contained"
                         color="primary"
                         className={classes.button}
-                        onClick={() => setItemOffset(itemOffset - itemsPerPage)}
+                        onClick={() => setOffset(offset - limit)}
                     >
                         Back
                         <ArrowBackRoundedIcon />
@@ -198,16 +196,11 @@ const Blogs = ({ blogs }) => {
 const Home = () => {
     const dispatch = useDispatch();
     const [error, setError] = useState("");
-    const blogs = useSelector((state) => state.blogs.blogs);
-
-    useEffect(() => {
-        dispatch(blogActions.getBlogs());
-    }, []);
 
     return (
         <>
             {" "}
-            {blogs && <PaginatedItems items={blogs} itemsPerPage={5} />}
+            {<PaginatedItems />}
             {error && <Error error={error} />}
         </>
     );

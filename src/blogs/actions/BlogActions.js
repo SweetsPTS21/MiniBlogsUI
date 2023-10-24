@@ -35,8 +35,8 @@ export const createBlog = (blog) => async (dispatch) => {
         });
 };
 
-export const getBlogs = () => async (dispatch) => {
-    const url = `${api_url}/blogs`;
+export const getBlogs = (limit, offset) => async (dispatch) => {
+    const url = `${api_url}/blogs?limit=${limit}&offset=${offset}`;
 
     await axiosInstance
         .get(url)
@@ -146,5 +146,4 @@ export const sendContact = (contact) => async (dispatch) => {
             console.log(error);
             message.error("Error sending contact");
         });
-}
-
+};
