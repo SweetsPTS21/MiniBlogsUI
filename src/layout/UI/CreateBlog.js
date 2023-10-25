@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { TextareaAutosize } from "@mui/base";
+import React, { useState } from "react";
 import { message } from "antd";
 import { TextValidator, ValidatorForm } from "react-material-ui-form-validator";
 import { makeStyles } from "@material-ui/core/styles";
@@ -15,6 +14,10 @@ import {
     TextField,
 } from "@material-ui/core";
 import { Add, Delete } from "@material-ui/icons";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import { styled } from "@mui/material/styles";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { storage } from "../../config/FirebaseConfig";
 
 const useStyles = makeStyles((theme) => ({
     adminPage: {
@@ -61,6 +64,18 @@ const useStyles = makeStyles((theme) => ({
         border: "none",
     },
 }));
+
+const VisuallyHiddenInput = styled("input")({
+    clip: "rect(0 0 0 0)",
+    clipPath: "inset(50%)",
+    height: 1,
+    overflow: "hidden",
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    whiteSpace: "nowrap",
+    width: 1,
+});
 
 const CreateBlog = (props) => {
     const classes = useStyles();
@@ -125,6 +140,26 @@ const CreateBlog = (props) => {
         const newContent = content;
         newContent.splice(index, 1);
         setContent([...newContent]);
+    };
+
+    const handleFilechange = async (e) => {
+        e.preventDefault();
+        const msg = message.loading("Uploading image!", 0);
+
+        const file = e.target.files[0];
+        const storageRef = ref(storage, `images/${file.name}`);
+
+        try {
+            const snapshot = await uploadBytes(storageRef, file);
+            message.success("File uploaded successfully");
+
+            const url = await getDownloadURL(snapshot.ref);
+            setImage(url);
+        } catch (error) {
+            console.error("Error uploading file:", error);
+        } finally {
+            setTimeout(msg, 1);
+        }
     };
 
     return (
@@ -246,6 +281,18 @@ const CreateBlog = (props) => {
                                     onChange={(e) => setImage(e.target.value)}
                                     className={classes.textField}
                                 />
+                                <Button
+                                    component="label"
+                                    variant="contained"
+                                    startIcon={<CloudUploadIcon />}
+                                    style={{ marginTop: "1em" }}
+                                >
+                                    Upload file
+                                    <VisuallyHiddenInput
+                                        type="file"
+                                        onChange={(e) => handleFilechange(e)}
+                                    />
+                                </Button>
                             </FormControl>
                             <FormControl className={classes.form__control}>
                                 <Typography className={classes.title}>

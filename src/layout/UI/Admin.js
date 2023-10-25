@@ -139,10 +139,14 @@ const Blog = (props) => {
                     </Button>
                     <Button
                         variant="contained"
-                        color="primary"
                         className={classes.button}
                         onClick={handleApproveBlogClick}
                         disabled={blog.approved}
+                        style={
+                            !blog.approved
+                                ? { backgroundColor: "#2e7d32", color: "#fff" }
+                                : {}
+                        }
                     >
                         Approve
                     </Button>
@@ -159,7 +163,8 @@ const Page = (props) => {
 
     const [index, setIndex] = useState(0);
     const [search, setSearch] = useState("");
-    const [approved, setApproved] = useState(false);
+    const [approved, setApproved] = useState(null);
+    const [all, setAll] = useState(true);
     const [blog, setBlog] = useState({});
 
     useEffect(() => {
@@ -167,7 +172,7 @@ const Page = (props) => {
     }, [index]);
 
     const handleSearchClick = () => {
-        dispatch(blogActions.getBlogByFilter(search));
+        dispatch(blogActions.getBlogByFilter(search, approved));
         setIndex(0);
     };
 
@@ -176,11 +181,18 @@ const Page = (props) => {
     };
 
     const handleApprovedCheckboxChange = () => {
+        setAll(false);
         setApproved(true);
     };
 
     const handleNotApprovedCheckboxChange = () => {
+        setAll(false);
         setApproved(false);
+    };
+
+    const handleAllCheckboxChange = () => {
+        setAll(true);
+        setApproved("");
     };
 
     useEffect(() => {
@@ -254,19 +266,25 @@ const Page = (props) => {
                                 }}
                             >
                                 <Checkbox
-                                    checked={approved}
+                                    checked={approved && !all}
                                     onChange={handleApprovedCheckboxChange}
                                     inputProps={{ "aria-label": "controlled" }}
                                 />
                                 <Typography variant="body2">Approve</Typography>
                                 <Checkbox
-                                    checked={!approved}
+                                    checked={!approved && !all}
                                     onChange={handleNotApprovedCheckboxChange}
                                     inputProps={{ "aria-label": "controlled" }}
                                 />
                                 <Typography variant="body2">
                                     Not Approve
                                 </Typography>
+                                <Checkbox
+                                    checked={all}
+                                    onChange={handleAllCheckboxChange}
+                                    inputProps={{ "aria-label": "controlled" }}
+                                />
+                                <Typography variant="body2">All</Typography>
                             </Grid>
                             <Grid item xs={12} className={classes.blogList}>
                                 {blogs && blogs.length > 0 && index === 0
@@ -292,12 +310,22 @@ const Page = (props) => {
 const Admin = () => {
     const dispatch = useDispatch();
     const blogs = useSelector((state) => state.blogs.blogs);
-
+    const [limit, setLimit] = useState(5);
+    const [offset, setOffset] = useState(0);
     useEffect(() => {
-        dispatch(blogActions.getBlogs());
-    }, []);
+        dispatch(blogActions.getBlogs(limit, offset));
+    }, [limit]);
 
-    return <>{blogs && <Page blogs={blogs} />}</>;
+    return (
+        <>
+            {blogs && <Page blogs={blogs} />}
+            {blogs && blogs.length >= limit && (
+                <Button variant="outlined" onClick={() => setLimit(limit + 5)}>
+                    Load more
+                </Button>
+            )}
+        </>
+    );
 };
 
 export default Admin;

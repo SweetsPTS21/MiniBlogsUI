@@ -18,6 +18,8 @@ const axiosInstance = axios.create({
     },
 });
 
+const blogLimit = process.env.REACT_APP_BLOG_LIMT;
+
 export const createBlog = (blog) => async (dispatch) => {
     const url = `${api_url}/blogs`;
 
@@ -27,7 +29,7 @@ export const createBlog = (blog) => async (dispatch) => {
             if (!response.data.success) {
                 throw new Error(response.data.message);
             }
-            dispatch(getBlogs());
+            dispatch(getBlogs(blogLimit, 0));
         })
         .catch((error) => {
             console.log(error);
@@ -92,7 +94,7 @@ export const updateBlog = (blog) => async (dispatch) => {
     await axiosInstance
         .put(url, blog)
         .then((response) => {
-            dispatch(getBlogs());
+            dispatch(getBlogs(blogLimit, 0));
             message.success("Blog updated");
         })
         .catch((error) => {
@@ -107,7 +109,7 @@ export const deleteBlog = (id) => async (dispatch) => {
     await axiosInstance
         .delete(url)
         .then((response) => {
-            dispatch(getBlogs());
+            dispatch(getBlogs(blogLimit, 0));
             message.success("Blog deleted");
         })
         .catch((error) => {
