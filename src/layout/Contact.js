@@ -5,10 +5,8 @@ import {
     FormControl,
     FormGroup,
     Grid,
-    TextField,
     Typography,
 } from "@material-ui/core";
-import { TextareaAutosize } from "@mui/base";
 import { TextValidator, ValidatorForm } from "react-material-ui-form-validator";
 import * as blogActions from "../blogs/actions/BlogActions";
 import { useDispatch } from "react-redux";
@@ -120,7 +118,10 @@ const Contact = () => {
                                     size="small"
                                     style={{ width: "100%" }}
                                     validators={["required"]}
-                                    errorMessages={["Enter your name"]}
+                                    inputProps={{ maxLength: 100 }}
+                                    errorMessages={[
+                                        "Enter summary (max 100 characters)",
+                                    ]}
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
                                 />
@@ -141,8 +142,8 @@ const Contact = () => {
                                     variant="outlined"
                                     size="small"
                                     style={{ width: "100%" }}
-                                    validators={["required"]}
-                                    errorMessages={["Enter email address"]}
+                                    validators={["required", "isEmail"]}
+                                    errorMessages={["Enter valid email"]}
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                 />
@@ -157,12 +158,18 @@ const Contact = () => {
                                 >
                                     Message
                                 </Typography>
-                                <TextField
+                                <TextValidator
                                     multiline
                                     minRows={5}
                                     variant="outlined"
                                     placeholder="Your message"
+                                    validators={["required"]}
                                     value={message}
+                                    fullWidth
+                                    inputProps={{ maxLength: 250 }}
+                                    errorMessages={[
+                                        "Enter message (max 250 characters)",
+                                    ]}
                                     onChange={(e) => setMessage(e.target.value)}
                                 />
                             </FormControl>

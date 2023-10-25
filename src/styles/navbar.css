@@ -6,7 +6,8 @@
 }
 
 .navbar__content {
-    max-width: 1000px;
+    max-width: 968px;
+    padding: 0 16px;
     display: flex;
     margin: 0 auto;
     background-color: #fff;
@@ -21,7 +22,7 @@
 .navbar__left img {
     width: 40px;
     height: 40px;
-    margin-left: 40px;
+    margin-right: 40px;
     cursor: pointer;
 }
 
@@ -36,7 +37,7 @@
 }
 
 .navbar__right .link {
-    margin-right: 20px;
+    margin-left: 20px;
     font-size: 18px;
     text-decoration: none;
     color: #a24bf0;

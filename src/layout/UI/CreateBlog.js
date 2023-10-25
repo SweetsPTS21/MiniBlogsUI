@@ -189,7 +189,8 @@ const CreateBlog = (props) => {
                                     size="small"
                                     fullWidth
                                     validators={["required"]}
-                                    errorMessages={["Enter blog title"]}
+                                    errorMessages={["Enter blog title (max 100 characters)"]}
+                                    inputProps={{ maxLength: 100 }}                                           
                                     value={title}
                                     onChange={(e) => setTitle(e.target.value)}
                                     className={classes.textField}
@@ -205,6 +206,10 @@ const CreateBlog = (props) => {
                                     fullWidth
                                     variant="outlined"
                                     validators={["required"]}
+                                    inputProps={{ maxLength: 250 }}
+                                    errorMessages={[
+                                        "Enter summary (max 250 characters)",
+                                    ]}
                                     placeholder="Your message"
                                     value={summary}
                                     onChange={(e) => setSummary(e.target.value)}
@@ -221,6 +226,7 @@ const CreateBlog = (props) => {
                                     size="small"
                                     fullWidth
                                     validators={["required"]}
+                                    inputProps={{ maxLength: 20 }}
                                     errorMessages={["Enter valid date"]}
                                     value={publicDate}
                                     onChange={(e) =>
@@ -338,8 +344,9 @@ const CreateBlog = (props) => {
                                                 fullWidth
                                                 label="Title"
                                                 validators={["required"]}
+                                                inputProps={{ maxLength: 100 }}
                                                 errorMessages={[
-                                                    "Enter content",
+                                                    "Enter title (max 100 characters)",
                                                 ]}
                                                 value={item.title}
                                                 onChange={(e) =>
@@ -359,6 +366,10 @@ const CreateBlog = (props) => {
                                                 maxRows={4}
                                                 variant="outlined"
                                                 validators={["required"]}
+                                                inputProps={{ maxLength: 250 }}
+                                                errorMessages={[
+                                                    "Enter detail (max 250 characters)",
+                                                ]}
                                                 style={{
                                                     marginTop: "1em",
                                                 }}

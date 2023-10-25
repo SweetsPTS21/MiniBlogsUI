@@ -3,7 +3,6 @@ import {
     NavLink,
     Link,
 } from "react-router-dom";
-import logo from "../logo-nav.png";
 
 function Navbar() {
     return (

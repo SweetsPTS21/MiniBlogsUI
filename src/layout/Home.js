@@ -132,7 +132,7 @@ const PaginatedItems = () => {
             )}
         </>
     );
-}
+};
 
 const Blogs = ({ blogs }) => {
     const classes = userStyle();
@@ -167,7 +167,9 @@ const Blogs = ({ blogs }) => {
                                     variant="paragraph"
                                     className={classes.category}
                                 >
-                                    {item.categories}
+                                    {item.categories.map((category) => (
+                                        <>{category + " "}</>
+                                    ))}
                                 </Typography>
                             </Grid>
                             <Grid className={classes.blog__description}>
