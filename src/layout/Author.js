@@ -45,6 +45,11 @@ const userStyle = makeStyles((theme) => ({
         color: "#888888",
         marginRight: "0.5em",
     },
+    spacing: {
+        borderTop: "1px solid #ccc",
+        marginTop: "1em", 
+        margin: "0 0.5em"
+    }
 }));
 
 const Author = () => {
@@ -67,28 +72,30 @@ const Author = () => {
                         storytelling and thought-provoking narratives.
                     </Typography>
                 </Grid>
+                <Grid item xs={6} className={classes.spacing}></Grid>
                 <Grid item xs={12} className={classes.part}>
                     <Typography variant="h6">Related Posts</Typography>
                     <Typography
                         variant="inherit"
-                        style={{ marginTop: "0.5em" }}
+                        style={{ marginTop: "0.5em", color: "#888888" }}
                     >
                         The Enchanted Chronicles: A Journey into a Magical Realm
                     </Typography>
                     <Typography
                         variant="inherit"
-                        style={{ marginTop: "0.5em" }}
+                        style={{ marginTop: "0.5em", color: "#888888" }}
                     >
                         Echoes of Love: A Tale of Romance and Redemption
                     </Typography>
                 </Grid>
+                <Grid item xs={6} className={classes.spacing}></Grid>
                 <Grid
                     item
                     xs={12}
                     style={{
                         display: "flex",
                         padding: "0 0.5em",
-                        marginTop: "1em",
+                        paddingTop: "1em",
                     }}
                 >
                     <Instagram className={classes.imgIcon} />

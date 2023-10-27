@@ -22,6 +22,12 @@ import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import Box from "@mui/material/Box";
 import Chip from "@mui/material/Chip";
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs from 'dayjs';
+
 
 const useStyles = makeStyles((theme) => ({
     adminPage: {
@@ -67,6 +73,9 @@ const useStyles = makeStyles((theme) => ({
         width: "80px",
         border: "none",
     },
+    datePicker: {
+        width: "100%",
+    }
 }));
 
 const VisuallyHiddenInput = styled("input")({
@@ -247,7 +256,6 @@ const Content = (props) => {
     );
 };
 
-
 const CreateBlog = (props) => {
     const classes = useStyles();
     const dispatch = useDispatch();
@@ -257,7 +265,7 @@ const CreateBlog = (props) => {
     const blog = index === 2 ? currentBlog : {};
     const [title, setTitle] = useState(blog.title);
     const [summary, setSummary] = useState(blog.summary);
-    const [publicDate, setPublicDate] = useState(blog.publicDate);
+    const [publicDate, setPublicDate] = useState(dayjs(blog.publicDate));
     const [categories, setCategories] = useState(
         blog.categories ? blog.categories : []
     );
@@ -289,7 +297,6 @@ const CreateBlog = (props) => {
         props.setIndex(0);
     };
 
-
     const handleFilechange = async (e) => {
         e.preventDefault();
         const msg = message.loading("Uploading image!", 0);
@@ -309,6 +316,10 @@ const CreateBlog = (props) => {
             setTimeout(msg, 1);
         }
     };
+
+    const handleDateChange = (date) => {
+        setPublicDate(date);
+    }
 
     return (
         <>
@@ -369,21 +380,24 @@ const CreateBlog = (props) => {
                                 <Typography className={classes.title}>
                                     Date
                                 </Typography>
-                                <TextValidator
-                                    type="text"
-                                    placeholder="Date"
-                                    variant="outlined"
-                                    size="small"
-                                    fullWidth
-                                    validators={["required"]}
-                                    inputProps={{ maxLength: 20 }}
-                                    errorMessages={["Enter valid date"]}
-                                    value={publicDate}
-                                    onChange={(e) =>
-                                        setPublicDate(e.target.value)
-                                    }
-                                    className={classes.textField}
-                                />
+                                <LocalizationProvider
+                                    dateAdapter={AdapterDayjs}
+                                >
+                                    <DemoContainer
+                                        components={[
+                                            "DatePicker",
+                                            "DatePicker",
+                                        ]}
+                                    >
+                                        <DatePicker                          
+                                            value={publicDate}
+                                            onChange={(e) =>
+                                                handleDateChange(e)
+                                            }
+                                            className={classes.datePicker}
+                                        />
+                                    </DemoContainer>
+                                </LocalizationProvider>
                             </FormControl>
                             <FormControl className={classes.form__control}>
                                 <Typography className={classes.title}>

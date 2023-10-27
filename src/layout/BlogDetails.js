@@ -5,6 +5,7 @@ import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import { Link, useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import * as blogActions from "../blogs/actions/BlogActions";
+import { format } from "date-fns";
 
 const userStyle = makeStyles((theme) => ({
     detailPage: {
@@ -60,6 +61,10 @@ const BlogDetails = () => {
         dispatch(blogActions.getBlogById(id));
     }, [id, dispatch]);
 
+    const convertDate = (date) => {
+        return format(new Date(date), "yyyy-MM-dd");
+    };
+    
     return (
         <>
             <Grid item xs={12} className={classes.detailPage}>
@@ -99,7 +104,7 @@ const BlogDetails = () => {
                                         variant="inherit"
                                         className={classes.date}
                                     >
-                                        {blog.publicDate}
+                                        {convertDate(blog.publicDate)}
                                     </Typography>
                                     <Typography
                                         variant="inherit"

@@ -7,6 +7,7 @@ import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import Error from "../components/Error";
 import { useDispatch, useSelector } from "react-redux";
 import * as blogActions from "../blogs/actions/BlogActions";
+import { format } from "date-fns";
 
 const userStyle = makeStyles((theme) => ({
     root: {
@@ -136,6 +137,11 @@ const PaginatedItems = () => {
 // Blogs component to display blogs
 const Blogs = ({ blogs }) => {
     const classes = userStyle();
+
+    const convertDate = (date) => {
+        return format(new Date(date), "yyyy-MM-dd");
+    };
+    
     return (
         <>
             {blogs ? (
@@ -161,14 +167,16 @@ const Blogs = ({ blogs }) => {
                                     variant="inherit"
                                     className={classes.date}
                                 >
-                                    {item.publicDate}
+                                    {convertDate(item.publicDate)}
                                 </Typography>
                                 <Typography
                                     variant="inherit"
                                     className={classes.category}
                                 >
                                     {item.categories.map((category, index) => (
-                                        <span key={index}>{category + " "}</span>
+                                        <span key={index}>
+                                            {category + " "}
+                                        </span>
                                     ))}
                                 </Typography>
                             </Grid>

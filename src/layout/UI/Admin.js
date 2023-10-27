@@ -14,6 +14,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import { format } from "date-fns";
 
 const useStyles = makeStyles((theme) => ({
     page: {
@@ -136,6 +137,10 @@ const Blog = (props) => {
         setOpenDialog(true);
     };
 
+    const convertDate = (date) => {
+        return format(new Date(date), "yyyy-MM-dd");
+    };
+
     return (
         <>
             <Grid item xs={12} className={classes.blog}>
@@ -145,7 +150,9 @@ const Blog = (props) => {
                 <Grid item xs={7} className={classes.blog__content}>
                     <Typography variant="h6">{blog.title}</Typography>
                     <Typography variant="body1">{blog.summary}</Typography>
-                    <Typography variant="body2">{blog.publicDate}</Typography>
+                    <Typography variant="body2">
+                        {convertDate(blog.publicDate)}
+                    </Typography>
                     <Typography variant="body2">
                         {blog.categories.map((category, index) => (
                             <span key={index}>{category + " "}</span>
