@@ -1,9 +1,4 @@
-import {
-    Button,
-    Grid,
-    TextField,
-    Typography,
-} from "@material-ui/core";
+import { Button, Grid, TextField, Typography } from "@material-ui/core";
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useEffect, useState } from "react";
@@ -12,7 +7,13 @@ import * as blogActions from "../../blogs/actions/BlogActions";
 import CreateBlog from "./CreateBlog";
 import { message } from "antd";
 import { Search, Add, Edit, Delete } from "@material-ui/icons";
+import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 import Checkbox from "@mui/material/Checkbox";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 
 const useStyles = makeStyles((theme) => ({
     page: {
@@ -70,10 +71,48 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+// Dialog delete show to confirm delete blog
+const DialogDelete = (props) => {
+    const openDialog = props.open;
+
+    const handleClose = () => {
+        props.setOpen(false);
+    };
+
+    const handleDeleteClick = () => {
+        props.handleDeleteClick();
+        props.setOpen(false);
+    };
+
+    return (
+        <Dialog
+            open={openDialog}
+            onClose={handleClose}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+        >
+            <DialogTitle id="alert-dialog-title">{"Warning!"}</DialogTitle>
+            <DialogContent>
+                <DialogContentText id="alert-dialog-description">
+                    Do you want to delete this blog?
+                </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={handleDeleteClick} autoFocus>
+                    Yes
+                </Button>
+                <Button onClick={handleClose}>No</Button>
+            </DialogActions>
+        </Dialog>
+    );
+};
+
+// Blog component show blog in admin page
 const Blog = (props) => {
     const classes = useStyles();
     const blog = props.blog;
     const dispatch = useDispatch();
+    const [openDialog, setOpenDialog] = useState(false);
 
     const handleUpdateBlogClick = () => {
         dispatch(blogActions.getBlogById(blog.id));
@@ -93,6 +132,10 @@ const Blog = (props) => {
         setTimeout(msg, 1);
     };
 
+    const handleOpenDialog = () => {
+        setOpenDialog(true);
+    };
+
     return (
         <>
             <Grid item xs={12} className={classes.blog}>
@@ -103,7 +146,11 @@ const Blog = (props) => {
                     <Typography variant="h6">{blog.title}</Typography>
                     <Typography variant="body1">{blog.summary}</Typography>
                     <Typography variant="body2">{blog.publicDate}</Typography>
-                    <Typography variant="body2">{blog.categories}</Typography>
+                    <Typography variant="body2">
+                        {blog.categories.map((category, index) => (
+                            <span key={index}>{category + " "}</span>
+                        ))}
+                    </Typography>
                     <Typography
                         variant="body2"
                         className={
@@ -128,7 +175,7 @@ const Blog = (props) => {
                         variant="contained"
                         color="secondary"
                         className={classes.button}
-                        onClick={handleDeleteClick}
+                        onClick={handleOpenDialog}
                     >
                         <Delete />
                     </Button>
@@ -147,10 +194,16 @@ const Blog = (props) => {
                     </Button>
                 </Grid>
             </Grid>
+            <DialogDelete
+                open={openDialog}
+                setOpen={setOpenDialog}
+                handleDeleteClick={handleDeleteClick}
+            />
         </>
     );
 };
 
+// Page component show admin page
 const Page = (props) => {
     const classes = useStyles();
     const dispatch = useDispatch();
@@ -192,7 +245,7 @@ const Page = (props) => {
 
     useEffect(() => {
         dispatch(blogActions.getBlogByFilter(search, approved));
-    }, [approved]);
+    }, [approved, search, dispatch]);
 
     return (
         <div className={classes.page}>
@@ -285,6 +338,7 @@ const Page = (props) => {
                                 {blogs && blogs.length > 0 && index === 0
                                     ? blogs.map((item, index) => (
                                           <Blog
+                                              key={index}
                                               blog={item}
                                               setIndex={setIndex}
                                               setBlog={setBlog}
@@ -302,21 +356,33 @@ const Page = (props) => {
     );
 };
 
+// Admin component show admin page
 const Admin = () => {
     const dispatch = useDispatch();
     const blogs = useSelector((state) => state.blogs.blogs);
     const [limit, setLimit] = useState(5);
-    const [offset, setOffset] = useState(0);
+    const [offset] = useState(0);
     useEffect(() => {
         dispatch(blogActions.getBlogs(limit, offset));
-    }, [limit]);
+    }, [limit, offset, dispatch]);
 
     return (
         <>
             {blogs && <Page blogs={blogs} />}
             {blogs && blogs.length >= limit && (
-                <Button variant="outlined" onClick={() => setLimit(limit + 5)}>
+                <Button
+                    variant="contained"
+                    onClick={() => setLimit(limit + 5)}
+                    style={{
+                        backgroundColor: "#888888",
+                        color: "#fff",
+                        width: "160px",
+                        margin: "1em 0",
+                        border: "none",
+                    }}
+                >
                     Load more
+                    <ArrowForwardRoundedIcon />
                 </Button>
             )}
         </>

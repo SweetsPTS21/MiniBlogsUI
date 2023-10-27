@@ -39,7 +39,7 @@ const About = () => {
                         </Typography>
                     </Grid>
                     <Grid item xs={12} className={classes.about__content}>
-                        <Typography variant="paragraph">
+                        <Typography variant="inherit">
                             Lorem ipsum dolor sit amet, consectetur adipiscing
                             elit. Sed euismod eu lorem et ultricies. In porta
                             lorem at dui semper porttitor. Nullam quis cursus
@@ -55,7 +55,7 @@ const About = () => {
                         </Typography>
                     </Grid>
                     <Grid item xs={12} className={classes.about__content}>
-                        <Typography variant="paragraph">
+                        <Typography variant="inherit">
                             Lorem ipsum dolor sit amet, consectetur adipiscing
                             elit. Sed euismod eu lorem et ultricies. In porta
                             lorem at dui semper porttitor.

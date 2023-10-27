@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { message } from "antd";
 import { TextValidator, ValidatorForm } from "react-material-ui-form-validator";
 import { makeStyles } from "@material-ui/core/styles";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import * as blogActions from "../../blogs/actions/BlogActions";
 import {
@@ -11,13 +11,17 @@ import {
     FormGroup,
     Grid,
     Typography,
-    TextField,
 } from "@material-ui/core";
-import { Add, Delete } from "@material-ui/icons";
+import { Add } from "@material-ui/icons";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { styled } from "@mui/material/styles";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage } from "../../config/FirebaseConfig";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import Box from "@mui/material/Box";
+import Chip from "@mui/material/Chip";
 
 const useStyles = makeStyles((theme) => ({
     adminPage: {
@@ -77,6 +81,173 @@ const VisuallyHiddenInput = styled("input")({
     width: 1,
 });
 
+const CategorySelect = (props) => {
+    const categoryList = [
+        "Technology",
+        "Business",
+        "Health",
+        "Sport",
+        "Movie",
+        "Enterainment",
+        "Education",
+        "Other",
+    ];
+    const ITEM_HEIGHT = 42;
+    const ITEM_PADDING_TOP = 8;
+    const MenuProps = {
+        PaperProps: {
+            style: {
+                textAlign: "left",
+                maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+                width: 250,
+            },
+        },
+    };
+    const handleChangeCategory = (event) => {
+        const {
+            target: { value },
+        } = event;
+        props.setCategories(
+            // On autofill we get a the stringified value.
+            typeof value === "string" ? value.split(",") : value
+        );
+    };
+
+    return (
+        <Select
+            labelId="demo-multiple-chip-label"
+            id="demo-multiple-chip"
+            multiple
+            value={props.categories}
+            onChange={handleChangeCategory}
+            input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
+            renderValue={(selected) => (
+                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                    {selected.map((value) => (
+                        <Chip key={value} label={value} />
+                    ))}
+                </Box>
+            )}
+            MenuProps={MenuProps}
+        >
+            {categoryList.map((item) => (
+                <MenuItem key={item} value={item}>
+                    {item}
+                </MenuItem>
+            ))}
+        </Select>
+    );
+};
+
+const Content = (props) => {
+    const classes = useStyles();
+    const content = props.content;
+
+    const handleAddContent = () => {
+        const newContent = {
+            title: "",
+            detail: "",
+        };
+        props.setContent([...content, newContent]);
+    };
+
+    const handleChangeContentTitle = (e, index) => {
+        const newContent = content;
+        newContent[index].title = e.target.value;
+        props.setContent([...newContent]);
+    };
+
+    const handleChangeContentDetail = (e, index) => {
+        const newContent = content;
+        newContent[index].detail = e.target.value;
+        props.setContent([...newContent]);
+    };
+
+    const handleRemoveContent = (index) => {
+        const newContent = content;
+        newContent.splice(index, 1);
+        props.setContent([...newContent]);
+    };
+
+    return (
+        <>
+            {content &&
+                content.map((item, index) => (
+                    <div key={index}>
+                        <div
+                            style={{
+                                display: "flex",
+                                justifyContent: "flex-start",
+                                alignItems: "center",
+                            }}
+                        >
+                            <strong style={{ margin: "1em 0" }}>{`Part ${
+                                index + 1
+                            }`}</strong>
+                            <Button
+                                color="secondary"
+                                variant="text"
+                                size="small"
+                                style={{
+                                    height: "30px",
+                                    fontSize: "2em",
+                                    textAlign: "center",
+                                    padding: "0",
+                                }}
+                                onClick={(e) => handleRemoveContent(index)}
+                            >
+                                -
+                            </Button>
+                        </div>
+                        <TextValidator
+                            type="text"
+                            variant="outlined"
+                            size="small"
+                            fullWidth
+                            label="Title"
+                            validators={["required"]}
+                            inputProps={{ maxLength: 100 }}
+                            errorMessages={["Enter title (max 100 characters)"]}
+                            value={item.title}
+                            onChange={(e) => handleChangeContentTitle(e, index)}
+                            className={classes.textField}
+                            style={{ fontWeight: "bold" }}
+                        />
+                        <TextValidator
+                            id="standard-multiline-flexible"
+                            label="Content"
+                            multiline
+                            fullWidth
+                            maxRows={4}
+                            variant="outlined"
+                            validators={["required"]}
+                            inputProps={{ maxLength: 250 }}
+                            errorMessages={[
+                                "Enter detail (max 250 characters)",
+                            ]}
+                            style={{
+                                marginTop: "1em",
+                            }}
+                            value={item.detail}
+                            onChange={(e) =>
+                                handleChangeContentDetail(e, index)
+                            }
+                        />
+                    </div>
+                ))}
+            <Button
+                variant="outlined"
+                fullWidth
+                style={{ marginTop: "1em" }}
+                onClick={handleAddContent}
+            >
+                <Add />
+            </Button>
+        </>
+    );
+};
+
+
 const CreateBlog = (props) => {
     const classes = useStyles();
     const dispatch = useDispatch();
@@ -87,7 +258,9 @@ const CreateBlog = (props) => {
     const [title, setTitle] = useState(blog.title);
     const [summary, setSummary] = useState(blog.summary);
     const [publicDate, setPublicDate] = useState(blog.publicDate);
-    const [categories, setCategories] = useState(blog.categories);
+    const [categories, setCategories] = useState(
+        blog.categories ? blog.categories : []
+    );
     const [source, setSource] = useState(blog.source);
     const [image, setImage] = useState(blog.image);
     const [content, setContent] = useState(blog.content ? blog.content : []);
@@ -116,31 +289,6 @@ const CreateBlog = (props) => {
         props.setIndex(0);
     };
 
-    const handleAddContent = () => {
-        const newContent = {
-            title: "",
-            detail: "",
-        };
-        setContent([...content, newContent]);
-    };
-
-    const handleChangeContentTitle = (e, index) => {
-        const newContent = content;
-        newContent[index].title = e.target.value;
-        setContent([...newContent]);
-    };
-
-    const handleChangeContentDetail = (e, index) => {
-        const newContent = content;
-        newContent[index].detail = e.target.value;
-        setContent([...newContent]);
-    };
-
-    const handleRemoveContent = (index) => {
-        const newContent = content;
-        newContent.splice(index, 1);
-        setContent([...newContent]);
-    };
 
     const handleFilechange = async (e) => {
         e.preventDefault();
@@ -173,7 +321,7 @@ const CreateBlog = (props) => {
                     >
                         <ArrowBackRoundedIcon />
                     </Button>
-                    <Typography variant="h5">Create Blog</Typography>
+                    <Typography variant="h5">Create/Update Blog</Typography>
                 </Grid>
                 <Grid item xs={12}>
                     <ValidatorForm onSubmit={handleSubmit}>
@@ -189,8 +337,10 @@ const CreateBlog = (props) => {
                                     size="small"
                                     fullWidth
                                     validators={["required"]}
-                                    errorMessages={["Enter blog title (max 100 characters)"]}
-                                    inputProps={{ maxLength: 100 }}                                           
+                                    errorMessages={[
+                                        "Enter blog title (max 100 characters)",
+                                    ]}
+                                    inputProps={{ maxLength: 100 }}
                                     value={title}
                                     onChange={(e) => setTitle(e.target.value)}
                                     className={classes.textField}
@@ -239,19 +389,9 @@ const CreateBlog = (props) => {
                                 <Typography className={classes.title}>
                                     Category
                                 </Typography>
-                                <TextValidator
-                                    type="text"
-                                    placeholder="Category"
-                                    variant="outlined"
-                                    size="small"
-                                    fullWidth
-                                    validators={["required"]}
-                                    errorMessages={["Enter category"]}
-                                    value={categories}
-                                    onChange={(e) =>
-                                        setCategories(e.target.value)
-                                    }
-                                    className={classes.textField}
+                                <CategorySelect
+                                    categories={categories}
+                                    setCategories={setCategories}
                                 />
                             </FormControl>
                             <FormControl className={classes.form__control}>
@@ -304,93 +444,10 @@ const CreateBlog = (props) => {
                                 <Typography className={classes.title}>
                                     Content
                                 </Typography>
-                                {content &&
-                                    content.map((item, index) => (
-                                        <div>
-                                            <div
-                                                style={{
-                                                    display: "flex",
-                                                    justifyContent:
-                                                        "flex-start",
-                                                    alignItems: "center",
-                                                }}
-                                            >
-                                                <strong
-                                                    style={{ margin: "1em 0" }}
-                                                >{`Part ${index + 1}`}</strong>
-                                                <Button
-                                                    color="secondary"
-                                                    variant="text"
-                                                    size="small"
-                                                    style={{
-                                                        height: "30px",
-                                                        fontSize: "2em",
-                                                        textAlign: "center",
-                                                        padding: "0",
-                                                    }}
-                                                    onClick={(e) =>
-                                                        handleRemoveContent(
-                                                            index
-                                                        )
-                                                    }
-                                                >
-                                                    -
-                                                </Button>
-                                            </div>
-                                            <TextValidator
-                                                type="text"
-                                                variant="outlined"
-                                                size="small"
-                                                fullWidth
-                                                label="Title"
-                                                validators={["required"]}
-                                                inputProps={{ maxLength: 100 }}
-                                                errorMessages={[
-                                                    "Enter title (max 100 characters)",
-                                                ]}
-                                                value={item.title}
-                                                onChange={(e) =>
-                                                    handleChangeContentTitle(
-                                                        e,
-                                                        index
-                                                    )
-                                                }
-                                                className={classes.textField}
-                                                style={{ fontWeight: "bold" }}
-                                            />
-                                            <TextValidator
-                                                id="standard-multiline-flexible"
-                                                label="Content"
-                                                multiline
-                                                fullWidth
-                                                maxRows={4}
-                                                variant="outlined"
-                                                validators={["required"]}
-                                                inputProps={{ maxLength: 250 }}
-                                                errorMessages={[
-                                                    "Enter detail (max 250 characters)",
-                                                ]}
-                                                style={{
-                                                    marginTop: "1em",
-                                                }}
-                                                value={item.detail}
-                                                onChange={(e) =>
-                                                    handleChangeContentDetail(
-                                                        e,
-                                                        index
-                                                    )
-                                                }
-                                            />
-                                        </div>
-                                    ))}
-                                <Button
-                                    variant="outlined"
-                                    fullWidth
-                                    style={{ marginTop: "1em" }}
-                                    onClick={handleAddContent}
-                                >
-                                    <Add />
-                                </Button>
+                                <Content
+                                    content={content}
+                                    setContent={setContent}
+                                />
                             </FormControl>
                             <Button
                                 variant="contained"

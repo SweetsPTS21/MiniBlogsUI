@@ -16,26 +16,26 @@ function Navbar() {
                 <div className="navbar__right">
                     <div className="navbar__right__link">
                         <NavLink
-                            exact
+                            exact="true"
                             to="/"
                             className="link"
-                            activeClassName="active"
+                            activeclassname="active"
                         >
                             Home
                         </NavLink>
                         <NavLink
-                            exact
+                            exact="true"
                             to="/about"
                             className="link"
-                            activeClassName="active"
+                            activeclassname="active"
                         >
                             About
                         </NavLink>
                         <NavLink
-                            exact
+                            exact="true"
                             to="/contact"
                             className="link"
-                            activeClassName="active"
+                            activeclassname="active"
                         >
                             Contact
                         </NavLink>

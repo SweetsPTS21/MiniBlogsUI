@@ -1,5 +1,4 @@
-import React, { lazy, useEffect, useState } from "react";
-import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import { Button, Grid, Typography } from "@material-ui/core";
@@ -13,10 +12,9 @@ const userStyle = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
         width: "100%",
-        backgroundColor: "#f0f0f0",
+        backgroundColor: "#e9e9e9",
     },
     main: {
-        maxWidth: 1000,
         margin: "0 auto",
     },
     container: {
@@ -89,16 +87,17 @@ const userStyle = makeStyles((theme) => ({
     },
 }));
 
+// PaginatedItems component to display paginated items
 const PaginatedItems = () => {
     const classes = userStyle();
     const dispatch = useDispatch();
     const blogs = useSelector((state) => state.blogs.blogs);
-    const [limit, setLimit] = useState(5);
+    const [limit] = useState(5);
     const [offset, setOffset] = useState(0);
 
     useEffect(() => {
         dispatch(blogActions.getBlogs(limit, offset));
-    }, [offset]);
+    }, [offset, limit, dispatch]);
 
     return (
         <>
@@ -134,13 +133,14 @@ const PaginatedItems = () => {
     );
 };
 
+// Blogs component to display blogs
 const Blogs = ({ blogs }) => {
     const classes = userStyle();
     return (
         <>
             {blogs ? (
                 blogs.map((item, index) => (
-                    <Grid item container className={classes.blog}>
+                    <Grid item container className={classes.blog} key={index}>
                         <Grid item xs={4} className={classes.blog__image}>
                             <Link to={`/blogs/${item.id}`}>
                                 <img
@@ -158,27 +158,27 @@ const Blogs = ({ blogs }) => {
                             </Grid>
                             <Grid item xs={12} className={classes.blog__date}>
                                 <Typography
-                                    variant="paragraph"
+                                    variant="inherit"
                                     className={classes.date}
                                 >
                                     {item.publicDate}
                                 </Typography>
                                 <Typography
-                                    variant="paragraph"
+                                    variant="inherit"
                                     className={classes.category}
                                 >
-                                    {item.categories.map((category) => (
-                                        <>{category + " "}</>
+                                    {item.categories.map((category, index) => (
+                                        <span key={index}>{category + " "}</span>
                                     ))}
                                 </Typography>
                             </Grid>
                             <Grid className={classes.blog__description}>
-                                <Typography variant="paragraph">
+                                <Typography variant="inherit">
                                     {item.summary}
                                 </Typography>
                                 <Link to={`/blogs/${item.id}`}>
                                     <Typography
-                                        variant="paragraph"
+                                        variant="inherit"
                                         className={classes.date}
                                     >
                                         {" Read more..."}
@@ -196,8 +196,7 @@ const Blogs = ({ blogs }) => {
 };
 
 const Home = () => {
-    const dispatch = useDispatch();
-    const [error, setError] = useState("");
+    const [error] = useState("");
 
     return (
         <>

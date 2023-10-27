@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Button, Grid, Typography } from "@material-ui/core";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import * as blogActions from "../blogs/actions/BlogActions";
 
@@ -53,13 +53,12 @@ const userStyle = makeStyles((theme) => ({
 const BlogDetails = () => {
     const dispatch = useDispatch();
     const classes = userStyle();
-    const navigate = useNavigate();
     const { id } = useParams();
     const blog = useSelector((state) => state.blogs.blog);
 
     useEffect(() => {
         dispatch(blogActions.getBlogById(id));
-    }, [id, navigate]);
+    }, [id, dispatch]);
 
     return (
         <>
@@ -97,16 +96,18 @@ const BlogDetails = () => {
                                     className={classes.details__content}
                                 >
                                     <Typography
-                                        variant="paragraph"
+                                        variant="inherit"
                                         className={classes.date}
                                     >
                                         {blog.publicDate}
                                     </Typography>
                                     <Typography
-                                        variant="paragraph"
+                                        variant="inherit"
                                         className={classes.category}
                                     >
-                                        {blog.categories}
+                                        {blog.categories.map((category, index) => (
+                                            <span key={index}>{category + " "}</span>
+                                        ))}
                                     </Typography>
                                 </Grid>
                                 <Grid
@@ -115,7 +116,7 @@ const BlogDetails = () => {
                                     className={classes.details__content}
                                 >
                                     <Typography
-                                        variant="paragraph"
+                                        variant="inherit"
                                         className={classes.title}
                                     >
                                         {blog.summary}
@@ -128,7 +129,7 @@ const BlogDetails = () => {
                                 className={classes.details__body}
                             >
                                 {blog.content && blog.content.map((item, index) => (
-                                    <>
+                                    <div key={index}>
                                         <Grid
                                             item
                                             xs={12}
@@ -141,13 +142,13 @@ const BlogDetails = () => {
                                                 {item.title}
                                             </Typography>
                                             <Typography
-                                                variant="paragraph"
+                                                variant="inherit"
                                                 className={classes.title}
                                             >
                                                 {item.detail}
                                             </Typography>
                                         </Grid>
-                                    </>
+                                    </div>
                                 ))}
                             </Grid>
                         </Grid>

@@ -16,10 +16,11 @@ const userStyle = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
         width: "100%",
-        backgroundColor: "#f0f0f0",
+        backgroundColor: "#e9e9e9",
     },
     main: {
         maxWidth: 1000,
+        minWidth: 900,
         margin: "0 auto",
     },
     container: {
@@ -28,7 +29,6 @@ const userStyle = makeStyles((theme) => ({
         padding: "1em",
     },
     author: {
-        height: "100%",
         width: "100%",
         position: "relative",
         borderRadius: 5,

@@ -57,12 +57,14 @@ const userStyle = makeStyles((theme) => ({
     },
 }));
 
+// Contact component
 const Contact = () => {
     const classes = userStyle();
     const dispatch = useDispatch();
     const [email, setEmail] = useState("");
     const [name, setName] = useState("");
     const [message, setMessage] = useState("");
+
     const handleSubmit = async () => {
         const msg = antdMessage.loading("Sending message", 0);
         dispatch(blogActions.sendContact({ email, name, message }));
@@ -82,7 +84,7 @@ const Contact = () => {
                         </Typography>
                     </Grid>
                     <Grid item xs={12} className={classes.about__content}>
-                        <Typography variant="paragraph">
+                        <Typography variant="inherit">
                             Lorem ipsum dolor sit amet, consectetur adipiscing
                             elit. Sed euismod eu lorem et ultricies. In porta
                             lorem at dui semper porttitor. Nullam quis cursus
@@ -93,7 +95,7 @@ const Contact = () => {
                         </Typography>
                     </Grid>
                     <Grid item xs={12} className={classes.about__content}>
-                        <Typography variant="paragraph">
+                        <Typography variant="inherit">
                             Lorem ipsum dolor sit amet, consectetur adipiscing
                             elit. Sed euismod eu lorem et ultricies. In porta
                             lorem at dui semper porttitor.

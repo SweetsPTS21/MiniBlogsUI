@@ -6,7 +6,7 @@ import { Instagram, Facebook, Twitter, LinkedIn } from "@material-ui/icons";
 const userStyle = makeStyles((theme) => ({
     content: {
         position: "sticky",
-        top: 0,
+        top: "1em",
         maxHeight: "660px",
         display: "flex",
         flexDirection: "column",
@@ -62,22 +62,35 @@ const Author = () => {
                     </div>
                 </Grid>
                 <Grid item xs={12} className={classes.part}>
-                    <Typography variant="">
+                    <Typography variant="inherit" style={{ fontSize: "20px" }}>
                         John Smith is a prolific author known for his compelling
                         storytelling and thought-provoking narratives.
                     </Typography>
                 </Grid>
                 <Grid item xs={12} className={classes.part}>
                     <Typography variant="h6">Related Posts</Typography>
-                    <Typography variant="paragraph">
-                        The Enchanted Chronicles: A Journey into a Magical
-                        Realm
+                    <Typography
+                        variant="inherit"
+                        style={{ marginTop: "0.5em" }}
+                    >
+                        The Enchanted Chronicles: A Journey into a Magical Realm
                     </Typography>
-                    <Typography variant="paragraph">
+                    <Typography
+                        variant="inherit"
+                        style={{ marginTop: "0.5em" }}
+                    >
                         Echoes of Love: A Tale of Romance and Redemption
                     </Typography>
                 </Grid>
-                <Grid item xs={12} style={{display: "flex", padding: "0 0.5em"}}>
+                <Grid
+                    item
+                    xs={12}
+                    style={{
+                        display: "flex",
+                        padding: "0 0.5em",
+                        marginTop: "1em",
+                    }}
+                >
                     <Instagram className={classes.imgIcon} />
                     <Facebook className={classes.imgIcon} />
                     <Twitter className={classes.imgIcon} />

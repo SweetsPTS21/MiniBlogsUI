@@ -8,7 +8,6 @@ import Content from "./layout/Content";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import { store, persistor } from "./blogs";
-import { getBlogs } from "./blogs/actions/BlogActions";
 
 function App() {
     //store.dispatch(getBlogs());

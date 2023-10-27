@@ -26,9 +26,6 @@ export const createBlog = (blog) => async (dispatch) => {
     await axiosInstance
         .post(url, blog)
         .then((response) => {
-            if (!response.data.success) {
-                throw new Error(response.data.message);
-            }
             dispatch(getBlogs(blogLimit, 0));
         })
         .catch((error) => {
